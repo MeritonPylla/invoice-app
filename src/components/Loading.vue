@@ -9,7 +9,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
     .loading {
         position: absolute;
         top: 0;
@@ -23,7 +23,7 @@ export default {
         align-items: center;
         @keyframes spin {
             to {
-                transform: translateZ(360deg);
+                transform: rotateZ(360deg);
             }
         }
         span {

@@ -1,6 +1,7 @@
 <template>
-    <div @click="checkClick" ref="invoiceWra" class="invoice-wrap flex flex-column">
+    <div @click="checkClick" ref="invoiceWrap" class="invoice-wrap flex flex-column">
         <form class="invoice-content" @submit.prevent="submitForm">
+            <Loading v-show="loading" key="loading"/>
             <h1>New Invoice</h1>
 
 
@@ -107,11 +108,11 @@
                 <!-- Save/Exit -->
                 <div class="save flex">
                     <div class="left">
-                        <button @click="closeInvoice" class="red">Cancel</button>
+                        <button type="button" @click="closeInvoice" class="red">Cancel</button>
                     </div>
                     <div class="right flex">
-                        <button @click="saveDraft" class="dark-purple">Save Draft</button>
-                        <button @click="publishInvoice" class="purple">Create Invoice</button>
+                        <button type="submit" @click="saveDraft" class="dark-purple">Save Draft</button>
+                        <button type="submit" @click="publishInvoice" class="purple">Create Invoice</button>
                     </div>
                 </div>                                        
             </div>
@@ -122,12 +123,13 @@
 import {mapMutations} from 'vuex'
 import {uid} from 'uid'
 import db from '../firebase/firebaseinit'
-import loading from './Loading.vue'
+import Loading from './Loading.vue'
 export default {
     name: 'InvoiceModal',
     data() {
         return {
             dateOptions: { year: "numeric", month: "short", day: "numeric"},
+            loading: null,
             billerStreetAddress: null,
             billerCity: null,
             billerZipCode: null,
@@ -150,6 +152,9 @@ export default {
             invoiceTotal: 0
         }
     },
+    components: {
+        Loading
+    },
     created() {
 
         // get current date for invoice date field
@@ -157,7 +162,12 @@ export default {
         this.invoiceDate = new Date(this.invoiceDateUnix).toLocaleDateString("en-us", this.dateOptions);
     },
     methods: {
-        ...mapMutations(['TOGGLE_INVOICE']),
+        ...mapMutations(['TOGGLE_INVOICE', 'TOGGLE_MODAL']),
+        checkClick(e) {
+            if(e.target === this.$refs.invoiceWrap) {
+                this.TOGGLE_MODAL();
+            }
+        },
         closeInvoice() {
             this.TOGGLE_INVOICE();
         },
@@ -193,6 +203,9 @@ export default {
                 alert('Please ensure you filled out work items!')
                 return;
             }
+
+            this.loading = true
+
             this.calcInvoiceTotal();
 
             const dataBase = db.collection('invoices').doc();
@@ -221,6 +234,7 @@ export default {
                 invoiceTotal: this.invoiceTotal,
                 invoicePaid: null,
             })
+            this.loading = false
             this.TOGGLE_INVOICE();
         },
 
