@@ -88,11 +88,11 @@ export default createStore({
       });
       commit('INVOICES_LOADED')
     },
-    async UPDATE_INVOICE({commit, dispatch}, {docId, routeId}) {
+    async UPDATE_INVOICE({commit, dispatch, state}, {docId, routeId}) {
       commit('DELETE_INVOICE', docId);
       await dispatch('GET_INVOICES');
-      commit('TOGGLE_INVOICE');
-      commit('TOGGLE_EDIT_INVOICE');
+      state.invoiceModal = false
+      state.editInvoice = false
       commit('SET_CURRENT_INVOICE', routeId);
     },
     async DELETE_INVOICE({commit}, docId) {

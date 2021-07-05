@@ -74,7 +74,7 @@
                 </div>
                 <div class="total flex">
                     <p>Amount Due</p>
-                    <p>{{currentInvoice.invoiceTotal}}</p>
+                    <p>${{currentInvoice.invoiceTotal}}</p>
                 </div>
             </div>
         </div>
@@ -290,7 +290,7 @@ export default {
                     color:#fff;
                     padding: 32px;
                     background-color: rgba(12, 14, 22, 0.7);
-                    text-align: center;
+                    align-items: center;
                     border-radius: 0 0 20px 20px;
                     p {
                         flex: 1;
