@@ -15,7 +15,7 @@
                 </div>                
             </div>
             <div class="right flex">
-                <button @click="toggleEditInvoice(currentInvoice.docId)" class="dark-purple">Edit</button>
+                <button @click="toggleEditInvoice" class="dark-purple">Edit</button>
                 <button @click="deleteInvoice(currentInvoice.docId)" class="red">Delete</button>
                 <button v-if="currentInvoice.invoicePending" @click="updateStatusToPaid(currentInvoice.docId)" class="green">Mark as Paid</button>
                 <button v-if="currentInvoice.invoiceDraft || currentInvoice.invoicePaid" @click="updateStatusToPending" class="orange">Mark as Pending</button>
@@ -93,14 +93,25 @@ export default {
         this.getCurrentInvoice()
     },
     methods: {
-        ...mapMutations(['SET_CURRENT_INVOICE']),
+        ...mapMutations(['SET_CURRENT_INVOICE', 'TOGGLE_EDIT_INVOICE', 'TOGGLE_INVOICE']),
         getCurrentInvoice() {
             this.SET_CURRENT_INVOICE(this.$route.params.invoiceId)
             this.currentInvoice = this.currentInvoiceArray[0]
+        },
+        toggleEditInvoice() {
+            this.TOGGLE_EDIT_INVOICE();
+            this.TOGGLE_INVOICE();
         }
     },
     computed: {
-        ...mapState(['currentInvoiceArray'])
+        ...mapState(['currentInvoiceArray', 'editInvoice'])
+    },
+    watch: {
+        editInvoice() {
+            if(!this.editInvoice) {
+                this.currentInvoice = this.currentInvoiceArray[0]
+            }
+        }
     }
 }
 </script>
