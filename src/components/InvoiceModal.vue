@@ -196,7 +196,7 @@ export default {
     },
     methods: {
         ...mapMutations(['TOGGLE_INVOICE', 'TOGGLE_MODAL', 'TOGGLE_EDIT_INVOICE']),
-        ...mapActions(['UPDATE_INVOICE']),
+        ...mapActions(['UPDATE_INVOICE', 'GET_INVOICES']),
         checkClick(e) {
             if(e.target === this.$refs.invoiceWrap) {
                 this.TOGGLE_MODAL();
@@ -205,7 +205,7 @@ export default {
         closeInvoice() {
             this.TOGGLE_INVOICE();
             if(this.editInvoice) {
-                this.TOGGLE_EDIT_INVOICE()
+                this.TOGGLE_EDIT_INVOICE();
             }
         },
         addNewInvoiceItem() {
@@ -273,6 +273,7 @@ export default {
             })
             this.loading = false
             this.TOGGLE_INVOICE();
+            this.GET_INVOICES();
         },
         async updateInvoice() {
             if(this.invoiceItemList.length <= 0) {
@@ -298,18 +299,18 @@ export default {
                 clientZipCode: this.clientZipCode,
                 clientCountry: this.clientCountry,
                 paymentTerms: this.paymentTerms,
-                paymentDueDateUnix: this.paymentDueDateUnix,
                 paymentDueDate: this.paymentDueDate,
+                paymentDueDateUnix: this.paymentDueDateUnix,
                 productDescription: this.productDescription,
                 invoiceItemList: this.invoiceItemList,
                 invoiceTotal: this.invoiceTotal,
-            })
+            });
             this.loading = false
 
             const data = {
                 docId: this.docId,
-                routeId: this.$route.params.invoiceId
-            }
+                routeId: this.$route.params.invoiceId,
+            };
 
             this.UPDATE_INVOICE(data);
         },
@@ -317,7 +318,7 @@ export default {
         submitForm() {
             if(this.editInvoice) {
                 this.updateInvoice();
-                return
+                return;
             } 
             this.uploadInvoice();
         },
